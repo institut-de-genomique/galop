@@ -2,7 +2,7 @@
 
 This repository contains an exact copy of the standard Genoscope long reads assembly pipeline.
 
-At the moment, this is not intended for users to download as it uses still private internal libraries that are not accessible on Github. As time goes on, we intend to make this pipeline available to a broader audience. However, genome assembly and polishing commands are accessible in the `lib/assembly.py` and `lib/polishing.py` files.
+At the moment, this is not intended for users to download as it uses grid submission commands that will only work at Genoscope. As time goes on, we intend to make this pipeline available to a broader audience. However, genome assembly and polishing commands are accessible in the `lib/assembly.py` and `lib/polishing.py` files.
 
 ```
 galop.py -h
