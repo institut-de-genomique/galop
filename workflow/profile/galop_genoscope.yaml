@@ -1,0 +1,7 @@
+default-resources:
+    mem_mb: 10000
+set-threads:
+    hello_world: 1
+set-resources:
+    myrule:
+        mem: 500MB

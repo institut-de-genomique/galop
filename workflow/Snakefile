@@ -1,0 +1,2 @@
+rule all:
+    output: "hello_world.txt"
