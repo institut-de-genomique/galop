@@ -1,5 +1,7 @@
 default-resources:
-    mem_mb: 10000
+    mem_mb_per_cpu: 10000
+    runtime: 1d
+    qos: default
 set-threads:
     hello_world: 1
 set-resources:
