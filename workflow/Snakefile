@@ -1,2 +1,4 @@
+include: "rules/hello_world.smk"
+
 rule all:
-    output: "hello_world.txt"
+    input: "hello_world.txt"
