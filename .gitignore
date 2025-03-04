@@ -1,2 +1,5 @@
 venv
 .venv
+.snakemake
+__pycache__
+galop_assembly

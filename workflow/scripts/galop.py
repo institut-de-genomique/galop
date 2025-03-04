@@ -1,25 +1,19 @@
 #!/usr/bin/env python3
-from lib import assemblies
-from lib import polishing
-from lib import checks
-from lib import readsets
-from lib.config import Config, ReadsetConfig
-
-from slurpy.runner import Runner
-
-import argparse
 import os
+import subprocess
 import sys
-import getpass
 
-def create_dir(path, message):
+from lib import cli
+
+
+script_path = os.path.abspath(os.path.dirname(sys.argv[0]))
+
+
+def create_dir(path: str):
     try:
         os.mkdir(path)
-        print(message)
     except FileExistsError:
-        print(f"Directory {path} already exists.")
-        print("Please remove it or use the --force option to skip directory creation.")
-        exit(-1)
+        pass
     except FileNotFoundError:
         print(f"Path to {path} does not exist.")
         exit(-1)
@@ -28,118 +22,41 @@ def create_dir(path, message):
         exit(-1)
 
 
-def create_dir_tree(output_dir):
-    print("\nCreating directory tree...")
+def generate_snakemake_command(args) -> str:    
+    profiles_path = script_path.replace("scripts", "profile")
+    snakefile_path = script_path.replace("scripts", "Snakefile")
 
-    create_dir(output_dir, f"-- {output_dir}/")
-    os.chdir(output_dir)
+    cmd = f"snakemake --latency-wait 30 --executor {args.executor} "
+    cmd += f"--profile {profiles_path}/{args.config} --jobs 20 "
+    if args.use_apptainer:
+        cmd += "--use-apptainer "
+    cmd += f"--snakefile {snakefile_path} "
 
-    create_dir("Reads", "---- Reads/")
+    if args.command == "assembly":
+        cmd += "--config "
+        cmd += f"nanopore_input_file=[{','.join(args.nanopore_input_file)}] "
+        cmd += f"pacbio_input_file=[{','.join(args.pacbio_input_file)}] "
 
-    create_dir("Assembly", "---- Assembly/")
-    create_dir("Assembly/Smartdenovo", "------ Smartdenovo")
-    create_dir("Assembly/Raven", "------ Raven")
-    create_dir("Assembly/Wtdbg2", "------ Wtdbg2")
-    create_dir("Assembly/Flye", "------ Flye")
-    create_dir("Assembly/Hifiasm", "------ Hifiasm")
-
-    create_dir("Submission_scripts", "---- Submission_scripts/")
-
-
-def create_dir_tree_polishing(output_dir):
-    print("\nCreating directory tree...")
-
-    try:
-        os.mkdir(output_dir)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
-        print(f"Path to {output_dir} does not exist.")
-        exit(-1)
-    except PermissionError:
-        print(f"Unsufficient permissions to write output directory {output_dir}")
-        exit(-1)
-    os.chdir(output_dir)
-
-    create_dir("Polishing", "---- Polishing/")
-    create_dir("Polishing/Racon", "------ Racon")
-    create_dir("Polishing/Medaka", "------ Medaka")
-    create_dir("Polishing/Hapog", "------ Hapo-G")
-
-    try:
-        os.mkdir("Submission_scripts")
-        print("---- Submission_scripts/")
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
-        print(f"Path to {output_dir} does not exist.")
-        exit(-1)
-    except PermissionError:
-        print(f"Unsufficient permissions to write output directory Submission_scripts")
-        exit(-1)
-
+        cmd += f"genome_size={args.genome_size} "
+        cmd += f"readset_list={args.readset_list} readset_coverage={args.readset_coverage} "
+    
+    return cmd
+        
     
 
 if __name__ == "__main__":
-    print("")
+    args = cli.get_args()
 
-    parser = argparse.ArgumentParser(
-        prog="nanopore_assembly_pipeline.py",
-        description="\n\nExecutes the standard Genoscope Nanopore assembly pipeline.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        add_help=False,
-    )
+    create_dir(args.output_directory)
+    os.chdir(args.output_directory)
+    cmd = generate_snakemake_command(args)
+    print(f"\n{cmd}\n")
+    
+    process = subprocess.Popen(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
+    process.wait()
 
-    mandatory_args = parser.add_argument_group("Mandatory arguments")
-    mandatory_args.add_argument(
-        "--step",
-        action="store",
-        dest="step",
-        help="Defines if the program will launch assembly or polishing scripts",
-        default=None,
-        required=True,
-        choices=["assembly", "polishing"],
-    )
+    sys.exit(0)
 
-    assembly_mandatory_args = parser.add_argument_group("Assembly step arguments")
-    assembly_mandatory_args.add_argument(
-        "--proj",
-        "-p",
-        action="append",
-        dest="project_code",
-        help="Project and material codes, can be given multiple times (eg. -p BCM,A,B -p BWW,AB)",
-        default=None,
-        required=False,
-        nargs=1,
-    )
-    assembly_mandatory_args.add_argument(
-        "-i",
-        action="store",
-        dest="input_file",
-        help="Nanopore reads fastq file",
-        default="",
-        required=False,
-    )
-    assembly_mandatory_args.add_argument(
-        "--size",
-        "-s",
-        action="store",
-        dest="genome_size",
-        help="Estimated size of the genome in Mb",
-        default=None,
-        required=False,
-        type=float,
-    )
-    assembly_mandatory_args.add_argument(
-        "--cov",
-        "-c",
-        action="store",
-        dest="readset_coverage",
-        help="Coverage to use for longest and filtlong subsets",
-        default=30,
-        required=False,
-        type=int,
-    )
     assembly_mandatory_args.add_argument(
         "--assemblers",
         action="store",
@@ -150,53 +67,18 @@ if __name__ == "__main__":
         default="Smartdenovo,Wtdbg2,Flye,Necat,Nextdenovo",
         required=False,
     )
-    assembly_mandatory_args.add_argument(
-        "--readsets",
-        action="store",
-        dest="readset_list",
-        help="Comma-separated list of readsets to use (e.g. '--readsets Filtlong,Longest' "
-             "will not launch assemblies with all reads",
-        default="Full,Filtlong,Longest",
-        required=False,
-    )
-    assembly_mandatory_args.add_argument(
-        "--no-readset",
-        action="store_true",
-        dest="no_readset",
-        help="Disables readset creation",
-        default=False,
-        required=False,
-    )
-    assembly_mandatory_args.add_argument(
-        "--all-readsets",
-        action="store_true",
-        dest="use_all_readsets",
-        help="Disables the use of lsRunProj to check for readset validity and instead use all available readsets",
-        default=False,
-        required=False,
-    )
-    assembly_mandatory_args.add_argument(
-        "--force",
-        action="store_true",
-        dest="force",
-        help="Skips directory creation",
-        default=False,
-        required=False,
-    )
-    assembly_mandatory_args.add_argument(
-        "--nano-raw",
-        action="store_true",
-        dest="hq_reads",
-        help="Use --nano-raw instead of --nano-hq in Flye",
-        default=False,
-        required=False,
-    )
-    assembly_mandatory_args.add_argument(
-        "--pacbio",
-        action="store_true",
-        dest="pacbio",
-        help="Look for PacBio runs when building readsets."
-    )
+
+
+    # assembly_mandatory_args.add_argument(
+    #     "--force",
+    #     action="store_true",
+    #     dest="force",
+    #     help="Skips directory creation",
+    #     default=False,
+    #     required=False,
+    # )
+
+ 
 
     polishing_mandatory_args = parser.add_argument_group("Polishing step arguments")
     polishing_mandatory_args.add_argument(
@@ -256,15 +138,7 @@ if __name__ == "__main__":
         required=False,
     )
 
-    optional_args = parser.add_argument_group("Optional arguments")
-    optional_args.add_argument(
-        "--dir",
-        "-d",
-        action="store",
-        dest="output_directory",
-        help="Output directory",
-        default=None,
-    )
+
     optional_args.add_argument(
         "--help", "-h", action="help", help="Show this help message and exit"
     )

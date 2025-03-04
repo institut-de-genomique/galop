@@ -1,4 +1,19 @@
-include: "rules/hello_world.smk"
+include: "rules/readsets.smk"
+
+
+def generate_outputs():
+    outputs = []
+
+    if len(config["nanopore_input_file"]) > 0:
+        outputs.append("Reads/nanopore.fastq")
+    if len(config["pacbio_input_file"]) > 0:
+        outputs.append("Reads/pacbio.fastq")
+
+    if "Longest" in config["readset_list"]:
+        outputs.append("Reads/nanopore_longest.fastq")
+
+    return outputs
+
 
 rule all:
-    input: "hello_world.txt"
+    input: generate_outputs()

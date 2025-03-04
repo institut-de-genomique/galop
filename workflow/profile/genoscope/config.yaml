@@ -2,8 +2,9 @@ default-resources:
     mem_mb_per_cpu: 10000
     runtime: 1d
     qos: default
+    threads: 12
+    partition: normal
 set-threads:
-    hello_world: 1
-set-resources:
-    myrule:
-        mem: 500MB
+    concatenate_nanopore: 1
+    concatenate_pacbio: 1
+    extract_longest: 1
