@@ -128,3 +128,10 @@ def add_optional_arguments(parser):
         help="Use apptainer to run the pipeline",
         default=False,
     )
+    optional_args.add_argument(
+        "--container-version",
+        action="store_true",
+        dest="container_version",
+        help="Container version to use",
+        default="0.2",
+    )

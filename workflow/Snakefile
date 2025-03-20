@@ -5,12 +5,14 @@ def generate_outputs():
     outputs = []
 
     if len(config["nanopore_input_file"]) > 0:
-        outputs.append("Reads/nanopore.fastq")
+        outputs.append("Reads/nanopore_full.fastq")
     if len(config["pacbio_input_file"]) > 0:
-        outputs.append("Reads/pacbio.fastq")
+        outputs.append("Reads/pacbio_full.fastq")
 
     if "Longest" in config["readset_list"]:
         outputs.append("Reads/nanopore_longest.fastq")
+    if "Filtlong" in config["readset_list"]:
+        outputs.append("Reads/nanopore_filtlong.fastq")
 
     return outputs
 

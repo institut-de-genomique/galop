@@ -8,3 +8,4 @@ set-threads:
     concatenate_nanopore: 1
     concatenate_pacbio: 1
     extract_longest: 1
+    filtlong: 1
