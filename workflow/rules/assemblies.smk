@@ -1,0 +1,93 @@
+rule hifiasm_nanopore:
+    input: "Reads/nanopore_{readset}.fastq"
+    output: 
+        "Assembly/nanopore/Hifiasm/{readset}/hap1.fasta",
+        "Assembly/nanopore/Hifiasm/{readset}/hap2.fasta",
+        "Assembly/nanopore/Hifiasm/{readset}/haploid.fasta",
+    container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
+    threads: 36
+    shell: """
+        cd Assembly/nanopore/Hifiasm/{wildcards.readset}
+
+        hifiasm --ont -o hifiasm -t {threads} ../../../../{input}
+
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.p_ctg.gfa > haploid.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap1.p_ctg.gfa > hap1.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap2.p_ctg.gfa > hap2.fasta
+
+        fastoche -f haploid.fasta > haploid.stats
+        fastoche -f hap1.fasta > hap1.stats
+        fastoche -f hap2.fasta > hap2.stats
+
+        rm hifiasm.bp.* hifiasm.ovlp.* hifiasm.ec.bin
+    """
+
+
+rule hifiasm_pacbio:    
+    input: "Reads/pacbio_{readset}.fastq"
+    output: 
+        "Assembly/pacbio/Hifiasm/{readset}/hap2.fasta",
+        "Assembly/pacbio/Hifiasm/{readset}/hap1.fasta",
+        "Assembly/pacbio/Hifiasm/{readset}/haploid.fasta",
+    container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
+    threads: 36
+    shell: """
+        cd Assembly/pacbio/Hifiasm/{wildcards.readset}
+
+        hifiasm -o hifiasm -t {threads} ../../../../{input}
+
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.p_ctg.gfa > haploid.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap1.p_ctg.gfa > hap1.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap2.p_ctg.gfa > hap2.fasta
+
+        fastoche -f haploid.fasta > haploid.stats
+        fastoche -f hap1.fasta > hap1.stats
+        fastoche -f hap2.fasta > hap2.stats
+
+        rm hifiasm.bp.* hifiasm.ovlp.* hifiasm.ec.bin
+    """
+
+
+rule nextdenovo:    
+    input: "Reads/{techno}_{readset}.fastq"
+    output: "Assembly/{techno}/Nextdenovo/{readset}/{readset}.fasta"
+    container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
+    threads: 36
+    params:
+        genome_size = config["genome_size"],
+        genome_size_bp = config["genome_size"] * 1_000_000
+    shell: """
+        cd Assembly/{wildcards.techno}/Nextdenovo/{wildcards.readset}
+
+        echo ../../../../{input} > reads.fofn
+
+        cp /usr/local/NextDenovo/doc/run_wrapper.cfg run_tmp.cfg
+        cat run_tmp.cfg | sed 's/{{threads}}/{threads}/g' | sed 's/{{genomesize}}/{params.genome_size}m/g' > run.cfg
+        rm run_tmp.cfg
+
+        nextDenovo run.cfg
+        mv rundir/03.ctg_graph/nd.asm.fasta {wildcards.readset}.fasta
+        fastoche -f {wildcards.readset}.fasta -m 2000 -g {params.genome_size_bp} > {wildcards.readset}.stats
+
+        rm -r rundir
+    """
+
+
+rule flye:    
+    input: "Reads/{techno}_{readset}.fastq"
+    output: "Assembly/{techno}/Flye/{readset}/{readset}.fasta"
+    container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
+    threads: 36
+    params:
+        genome_size = config["genome_size"],
+        genome_size_bp = config["genome_size"] * 1_000_000
+    shell: """
+        cd Assembly/{wildcards.techno}/Flye/{wildcards.readset}
+
+        flye --nano-hq ../../../../{input} -t {threads} -g {params.genome_size}m -o {wildcards.readset}
+
+        mv {wildcards.readset}/assembly.fasta {wildcards.readset}.fasta
+        mv {wildcards.readset}/assembly_info.txt {wildcards.readset}.assembly_info.txt
+
+        fastoche -f {wildcards.readset}.fasta -m 2000 -g {params.genome_size_bp} > {wildcards.readset}.stats
+    """

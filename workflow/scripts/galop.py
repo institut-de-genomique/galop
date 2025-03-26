@@ -27,18 +27,19 @@ def generate_snakemake_command(args) -> str:
     snakefile_path = script_path.replace("scripts", "Snakefile")
 
     cmd = f"snakemake --latency-wait 30 --executor {args.executor} "
-    cmd += f"--profile {profiles_path}/{args.config} --jobs 20 "
+    cmd += f"--profile {profiles_path}/{args.config} "
     if args.use_apptainer:
         cmd += "--use-apptainer "
-    cmd += f"--snakefile {snakefile_path} "
 
     if args.command == "assembly":
+        cmd += f"--snakefile {snakefile_path}_assembly "
         cmd += "--config "
         cmd += f"nanopore_input_file=[{','.join(args.nanopore_input_file)}] "
         cmd += f"pacbio_input_file=[{','.join(args.pacbio_input_file)}] "
 
         cmd += f"genome_size={args.genome_size} "
         cmd += f"readset_list={args.readset_list} readset_coverage={args.readset_coverage} "
+        cmd += f"assemblers_list={args.assemblers_list} "
     
     cmd += f"container_version='{args.container_version}' "
     
@@ -58,17 +59,6 @@ if __name__ == "__main__":
     process.wait()
 
     sys.exit(0)
-
-    assembly_mandatory_args.add_argument(
-        "--assemblers",
-        action="store",
-        dest="assembler_list",
-        help="Comma-separated list of assemblers to use (e.g. '--assemblers Smartdenovo,Raven,Wtdbg2'" 
-             "will not launch flye nor Necat. Choices: Flye, Hifiasm, Necat, Nextdenovo, Raven, Shasta," 
-             "Smartdenovo, Wtdbg2",
-        default="Smartdenovo,Wtdbg2,Flye,Necat,Nextdenovo",
-        required=False,
-    )
 
 
     # assembly_mandatory_args.add_argument(

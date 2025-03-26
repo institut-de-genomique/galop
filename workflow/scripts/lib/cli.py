@@ -3,6 +3,10 @@ import os
 import sys
 
 
+AUTHORIZED_READSETS = ["Full", "Longest", "Filtlong"]
+AUTHORIZED_ASSEMBLERS = ["Hifiasm", "Nextdenovo", "Flye"]
+
+
 def get_args():
     parser = argparse.ArgumentParser(
         prog="GALoP",
@@ -59,6 +63,17 @@ def get_args():
              "will not launch assemblies with all reads",
         default="Full,Filtlong,Longest",
         required=False,
+        type=check_readset_list,
+    )
+    assembly_parser.add_argument(
+        "--assemblers",
+        action="store",
+        dest="assemblers_list",
+        help="Comma-separated list of assemblers to use (e.g. '--assemblers Hifiasm,Flye'" 
+             "will not launch Nextdenovo. Choices: Flye, Hifiasm, Nextdenovo",
+        default="Hifiasm,Nextdenovo,Flye",
+        required=False,
+        type=check_assemblers_list,
     )
 
     add_optional_arguments(assembly_parser)
@@ -133,5 +148,33 @@ def add_optional_arguments(parser):
         action="store_true",
         dest="container_version",
         help="Container version to use",
-        default="0.2",
+        default="0.5",
     )
+
+
+def check_readset_list(readsets: str):
+    authorized_readset = [readset.upper() for readset in AUTHORIZED_READSETS]
+    readset_list = readsets.upper().split(",")
+    
+    for readset in readset_list:
+        if readset not in authorized_readset:
+            error_msg = f"ERROR: the '{readset}' readset does not belong to the list " \
+                f"of authorized readsets. Authorized readsets: {AUTHORIZED_READSETS}"
+            print(error_msg, file=sys.stderr)
+            sys.exit(1)
+            
+    return ",".join(readset_list)
+    
+
+def check_assemblers_list(assemblers: str):
+    authorized_assemblers = [assembler.upper() for assembler in AUTHORIZED_ASSEMBLERS]
+    assemblers_list = assemblers.upper().split(",")
+    
+    for assembler in assemblers_list:
+        if assembler not in authorized_assemblers:
+            error_msg = f"ERROR: the '{assembler}' assembler does not belong to the list " \
+                f"of authorized assemblers. Authorized assemblers: {AUTHORIZED_ASSEMBLERS}"
+            print(error_msg, file=sys.stderr)
+            sys.exit(1)
+            
+    return ",".join(assemblers_list)
