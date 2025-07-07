@@ -25,7 +25,7 @@ def create_dir(path: str):
 
 
 def generate_snakemake_command(args) -> str:
-    cmd = f"snakemake --latency-wait 30 --executor {args.executor} "
+    cmd = f"snakemake --latency-wait 30 --executor {args.executor} -p "
     
     if args.config:
         cmd += f"--profile {profiles_path}/{args.config} "
