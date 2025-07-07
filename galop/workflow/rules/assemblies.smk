@@ -91,3 +91,30 @@ rule flye:
 
         fastoche -f {wildcards.readset}.fasta -m 2000 -g {params.genome_size_bp} > {wildcards.readset}.stats
     """
+
+
+rule hifiasm_hybrid:
+    input: 
+        nanopore = "Reads/nanopore_full.fastq",
+        pacbio = "Reads/pacbio_full.fastq"
+    output:
+        "Assembly/hybrid/Hifiasm/{readset}/hap2.fasta",
+        "Assembly/hybrid/Hifiasm/{readset}/hap1.fasta",
+        "Assembly/hybrid/Hifiasm/{readset}/haploid.fasta",
+    container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
+    threads: 36
+    shell: """
+        cd Assembly/hybrid/Hifiasm
+
+        hifiasm -o hifiasm -t {threads} --ont {input.nanopore} ../../../../{input.pacbio}
+
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.p_ctg.gfa > haploid.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap1.p_ctg.gfa > hap1.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap2.p_ctg.gfa > hap2.fasta
+
+        fastoche -f haploid.fasta > haploid.stats
+        fastoche -f hap1.fasta > hap1.stats
+        fastoche -f hap2.fasta > hap2.stats
+
+        rm hifiasm.bp.* hifiasm.ovlp.* hifiasm.ec.bin
+    """
