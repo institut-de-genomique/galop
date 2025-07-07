@@ -17,7 +17,6 @@ def get_args():
 
     commands = parser.add_subparsers(dest="command", required=True)
     assembly_parser = commands.add_parser("assembly")
-    polishing_parser = commands.add_parser("polish")
 
     assembly_parser.add_argument(
         "--nanopore",
@@ -77,7 +76,6 @@ def get_args():
     )
 
     add_optional_arguments(assembly_parser)
-    add_optional_arguments(polishing_parser)
 
     args = parser.parse_args()
 
@@ -120,7 +118,7 @@ def add_optional_arguments(parser):
         action="store",
         dest="config",
         help="Name of a snakemake cluster profile directory",
-        default="genoscope",
+        default=None,
     )
     optional_args.add_argument(
         "-e", "--executor",
