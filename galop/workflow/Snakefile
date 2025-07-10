@@ -45,6 +45,12 @@ def generate_outputs():
         if "NEXTDENOVO" in config["assemblers_list"]:
             outputs.append("Assembly/pacbio/Nextdenovo/full/full.fasta")
 
+
+    if has_pacbio and has_nanopore:
+        outputs.append("Assembly/hybrid/Hifiasm/full/hap2.fasta"),
+        outputs.append("Assembly/hybrid/Hifiasm/full/hap1.fasta"),
+        outputs.append("Assembly/hybrid/Hifiasm/full/haploid.fasta"),
+
             
     return outputs
 
