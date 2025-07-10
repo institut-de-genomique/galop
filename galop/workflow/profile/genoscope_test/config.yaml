@@ -12,8 +12,8 @@ set-threads:
     concatenate_pacbio: 1
     extract_longest: 1
     filtlong: 1
-    hifiasm_nanopore: 36
-    hifiasm_pacbio: 36
-    hifiasm_hybrid: 36
-    nextdenovo: 36
-    flye: 36
+    hifiasm_nanopore: 12
+    hifiasm_pacbio: 12
+    hifiasm_hybrid: 12
+    nextdenovo: 12
+    flye: 12
