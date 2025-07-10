@@ -7,6 +7,8 @@ rule hifiasm_nanopore:
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     threads: 36
     shell: """
+        echo -e "Hifiasm\t$(hifiasm --version)" >> Assembly/software.versions
+
         cd Assembly/nanopore/Hifiasm/{wildcards.readset}
 
         hifiasm --ont -o hifiasm -t {threads} ../../../../{input}
@@ -32,6 +34,8 @@ rule hifiasm_pacbio:
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     threads: 36
     shell: """
+        echo -e "Hifiasm\t$(hifiasm --version)" >> Assembly/software.versions
+        
         cd Assembly/pacbio/Hifiasm/{wildcards.readset}
 
         hifiasm -o hifiasm -t {threads} ../../../../{input}
@@ -57,6 +61,8 @@ rule nextdenovo:
         genome_size = config["genome_size"],
         genome_size_bp = config["genome_size"] * 1_000_000
     shell: """
+        echo -e "Nextdenovo\t$(nextDenovo --version | tail -n 1 | cut -d ' ' -f 2)" >> Assembly/software.versions
+
         cd Assembly/{wildcards.techno}/Nextdenovo/{wildcards.readset}
 
         echo ../../../../{input} > reads.fofn
@@ -82,6 +88,8 @@ rule flye:
         genome_size = config["genome_size"],
         genome_size_bp = config["genome_size"] * 1_000_000
     shell: """
+        echo -e "Flye\t$(flye --version)" >> Assembly/software.versions
+
         cd Assembly/{wildcards.techno}/Flye/{wildcards.readset}
 
         flye --nano-hq ../../../../{input} -t {threads} -g {params.genome_size}m -o {wildcards.readset}
@@ -104,6 +112,8 @@ rule hifiasm_hybrid:
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     threads: 36
     shell: """
+        echo -e "Hifiasm\t$(hifiasm --version)" >> Assembly/software.versions
+        
         cd Assembly/hybrid/Hifiasm
 
         hifiasm -o hifiasm -t {threads} --ont ../../../{input.nanopore} ../../../{input.pacbio}
