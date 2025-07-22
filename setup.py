@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="GALoP",
+    name="galop",
     version="0.1.0",
     author="Benjamin Istace",
     author_email="bistace@genoscope.cns.fr",
