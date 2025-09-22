@@ -5,7 +5,7 @@ rule concatenate_nanopore:
         import os
 
         if len(input) == 1 and not input[0].endswith(".gz"):
-            shell(f"ln -s {abspath} {output}")
+            shell(f"ln -s {os.path.abspath(input[0])} {output}")
 
         else:
             for i in input:
