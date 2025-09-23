@@ -4,6 +4,8 @@ rule concatenate_nanopore:
     run:
         import os
 
+        shell("mkdir -p Reads")
+
         if len(input) == 1 and not input[0].endswith(".gz"):
             shell(f"ln -s {os.path.abspath(input[0])} {output}")
 
