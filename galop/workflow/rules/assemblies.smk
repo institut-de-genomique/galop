@@ -109,9 +109,9 @@ rule hifiasm_hybrid:
         nanopore = os.getcwd() + "Reads/nanopore_full.fastq",
         pacbio = os.getcwd() + "Reads/pacbio_full.fastq"
     output:
-        "Assembly/hybrid/Hifiasm/full/hap2.fasta",
         "Assembly/hybrid/Hifiasm/full/hap1.fasta",
-        "Assembly/hybrid/Hifiasm/full/haploid.fasta",
+        "Assembly/hybrid/Hifiasm/full/hap2.fasta",
+        "Assembly/hybrid/Hifiasm/full/haploid.fasta"
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     threads: 36
     shell: """
@@ -176,7 +176,7 @@ rule hifiasm_hybrid_hic:
     output: 
         "Assembly/hybrid_hic/Hifiasm/{readset}/hap1.fasta",
         "Assembly/hybrid_hic/Hifiasm/{readset}/hap2.fasta",
-        "Assembly/hybrid_hic/Hifiasm/{readset}/haploid.fasta",
+        "Assembly/hybrid_hic/Hifiasm/{readset}/haploid.fasta"
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     threads: 36
     shell: """

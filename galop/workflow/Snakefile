@@ -49,8 +49,8 @@ def generate_outputs():
 
 
     if has_pacbio and has_nanopore:
-        outputs.append("Assembly/hybrid/Hifiasm/full/hap2.fasta")
         outputs.append("Assembly/hybrid/Hifiasm/full/hap1.fasta")
+        outputs.append("Assembly/hybrid/Hifiasm/full/hap2.fasta")
         outputs.append("Assembly/hybrid/Hifiasm/full/haploid.fasta")
 
     
