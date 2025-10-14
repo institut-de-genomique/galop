@@ -52,8 +52,8 @@ rule pacbio_full_stats:
 
 
 rule extract_longest:
-    input: "Reads/nanopore_full.fastq"
-    output: os.getcwd() + "Reads/nanopore_longest.fastq"
+    input: os.getcwd() + "/Reads/nanopore_full.fastq"
+    output: os.getcwd() + "/Reads/nanopore_longest.fastq"
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     params:
         genome_size = config["genome_size"],
@@ -73,8 +73,8 @@ rule nanopore_longest_stats:
 
 
 rule filtlong:
-    input: "Reads/nanopore_full.fastq"
-    output: os.getcwd() + "Reads/nanopore_filtlong.fastq"
+    input: os.getcwd() + "/Reads/nanopore_full.fastq"
+    output: os.getcwd() + "/Reads/nanopore_filtlong.fastq"
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     params:
         kept_bases = config["genome_size"] * config["readset_coverage"] * 1_000_000
