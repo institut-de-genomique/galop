@@ -9,11 +9,15 @@ rule concatenate_nanopore:
 
         shell("mkdir -p Reads")
 
-        for i in input:
-            if i.endswith(".gz"):
-                shell(f"zcat {i} >> {output}")
-            else:
-                shell(f"cat {i} >> {output}")
+        if len(input) == 1 and not input[0].endswith(".gz"):
+            shell(f"ln -s {os.path.abspath(input[0])} {output}")
+
+        else:
+            for i in input:
+                if i.endswith(".gz"):
+                    shell(f"zcat {i} >> {output}")
+                else:
+                    shell(f"cat {i} >> {output}")
 
 
 rule nanopore_full_stats:
