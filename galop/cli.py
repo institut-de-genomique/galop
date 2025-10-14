@@ -12,7 +12,7 @@ def get_args():
         prog="GALoP",
         description="\n\nExecutes the standard Genoscope long reads assembly pipeline.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        add_help=False,
+        add_help=True,
     )
 
     commands = parser.add_subparsers(dest="command", required=True)
@@ -35,6 +35,17 @@ def get_args():
         action="append",
         dest="pacbio_input_file",
         help="PacBio fastq file(s). Can be given multiple times or separated by commas (,)",
+        required=False,
+        default=[],
+    )
+    assembly_parser.add_argument(
+        "--hic",
+        action="append",
+        dest="hic_read_pairs",
+        help=(
+            "Hi-C paired-end fastq files as comma-separated pairs. "
+            "Example: --hic R1_1.fastq.gz,R2_1.fastq.gz --hic R1_2.fastq.gz,R2_2.fastq.gz"
+        ),
         required=False,
         default=[],
     )
@@ -91,6 +102,11 @@ def get_args():
         args.nanopore_input_file = abs_path_list(args.nanopore_input_file)
         args.pacbio_input_file = abs_path_list(args.pacbio_input_file)
 
+        # Parse and validate Hi-C pairs if provided
+        hic_r1, hic_r2 = parse_hic_pairs(args.hic_read_pairs)
+        args.hic_r1 = hic_r1
+        args.hic_r2 = hic_r2
+
     return args
 
 
@@ -113,6 +129,35 @@ def abs_path_list(paths: list[str]):
     for p in path_list:
         abs_paths.append(os.path.abspath(p))
     return abs_paths
+
+
+def parse_hic_pairs(pairs: list[str]):
+    # Convert a list like ["R1a,R2a", "R1b,R2b", ...] to two lists
+    # of absolute paths while validating existence.
+    if not pairs:
+        return [], []
+
+    r1_list = []
+    r2_list = []
+    for entry in pairs:
+        parts = entry.split(",")
+        if len(parts) != 2 or not parts[0] or not parts[1]:
+            print(
+                "ERROR: --hic expects comma-separated pairs: R1.fastq.gz,R2.fastq.gz",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        r1 = os.path.abspath(parts[0])
+        r2 = os.path.abspath(parts[1])
+        if not os.path.exists(r1):
+            print(f"ERROR: Hi-C read file not found: {parts[0]} -> {r1}", file=sys.stderr)
+            sys.exit(1)
+        if not os.path.exists(r2):
+            print(f"ERROR: Hi-C read file not found: {parts[1]} -> {r2}", file=sys.stderr)
+            sys.exit(1)
+        r1_list.append(r1)
+        r2_list.append(r2)
+    return r1_list, r2_list
 
 
 def add_optional_arguments(parser):
