@@ -15,5 +15,7 @@ set-threads:
     hifiasm_nanopore: 12
     hifiasm_pacbio: 12
     hifiasm_hybrid: 12
+    hifiasm_nanopore_hic: 12
+    hifiasm_pacbio_hic: 12
     nextdenovo: 12
     flye: 12
