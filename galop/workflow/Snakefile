@@ -2,6 +2,9 @@ include: "rules/readsets.smk"
 include: "rules/assemblies.smk"
 
 
+import os
+
+
 def generate_outputs():
     outputs = []
     has_nanopore = len(config["nanopore_input_file"]) > 0
@@ -9,7 +12,7 @@ def generate_outputs():
     has_hic = len(config["hic_r1"]) > 0 and len(config["hic_r2"]) > 0
 
     if has_nanopore:
-        outputs.append("Reads/nanopore_full.fastq")
+        outputs.append(os.getcwd() + "Reads/nanopore_full.fastq")
         outputs.append("Reads/nanopore_full.stats")
 
         if "FULL" in config["readset_list"]:
@@ -23,20 +26,20 @@ def generate_outputs():
                 outputs.append("Assembly/nanopore/Flye/full/full.fasta")
     
         if "LONGEST" in config["readset_list"]:
-            outputs.append("Reads/nanopore_longest.fastq")
+            outputs.append(os.getcwd() + "Reads/nanopore_longest.fastq")
             outputs.append("Reads/nanopore_longest.stats")
             if "FLYE" in config["assemblers_list"]:
                 outputs.append("Assembly/nanopore/Flye/longest/longest.fasta")
     
         if "FILTLONG" in config["readset_list"]:
-            outputs.append("Reads/nanopore_filtlong.fastq")
+            outputs.append(os.getcwd() + "Reads/nanopore_filtlong.fastq")
             outputs.append("Reads/nanopore_filtlong.stats")
             if "FLYE" in config["assemblers_list"]:
                 outputs.append("Assembly/nanopore/Flye/filtlong/filtlong.fasta")
 
 
     if has_pacbio:
-        outputs.append("Reads/pacbio_full.fastq")
+        outputs.append(os.getcwd() + "Reads/pacbio_full.fastq")
         outputs.append("Reads/pacbio_full.stats")
         
         if "HIFIASM" in config["assemblers_list"]:
