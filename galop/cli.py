@@ -17,6 +17,10 @@ def get_args():
 
     commands = parser.add_subparsers(dest="command", required=True)
     assembly_parser = commands.add_parser("assembly")
+    commands.add_parser(
+        "list-profiles",
+        help="List available Snakemake profiles",
+    )
 
     assembly_parser.add_argument(
         "--nanopore",
