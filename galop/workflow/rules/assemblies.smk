@@ -128,3 +128,38 @@ rule hifiasm_hybrid:
 
         rm hifiasm.bp.* hifiasm.ovlp.* hifiasm.ec.bin
     """
+
+
+rule hifiasm_hic:
+    input: 
+        long_reads = "Reads/{techno}_{readset}.fastq",
+        hic_r1 = " --h1 ".join(config["hic_r1"]),
+        hic_r2 = " --h2 ".join(config["hic_r2"])
+    output: 
+        "Assembly/{techno}_hic/Hifiasm/{readset}/hap1.fasta",
+        "Assembly/{techno}_hic/Hifiasm/{readset}/hap2.fasta",
+        "Assembly/{techno}_hic/Hifiasm/{readset}/haploid.fasta",
+    container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
+    threads: 36
+    shell: """
+        echo -e "Hifiasm\t$(hifiasm --version)" >> Assembly/software.versions
+
+        cd Assembly/{wildcards.techno}_hic/Hifiasm/{wildcards.readset}
+
+        ont_flag=""
+        if [[ "{input}" =~ "nanopore" ]]; then
+            ont_flag="--ont"
+        fi
+
+        hifiasm ${{ont_flag}} -o hifiasm -t {threads} {input.hic_r1} {input.hic_r2} ../../../../{input}
+
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.p_ctg.gfa > haploid.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap1.p_ctg.gfa > hap1.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap2.p_ctg.gfa > hap2.fasta
+
+        fastoche -f haploid.fasta > haploid.stats
+        fastoche -f hap1.fasta > hap1.stats
+        fastoche -f hap2.fasta > hap2.stats
+
+        rm hifiasm.bp.* hifiasm.ovlp.* hifiasm.ec.bin
+    """
