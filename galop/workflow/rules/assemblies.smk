@@ -2,7 +2,7 @@ import os
 
 
 rule hifiasm_nanopore:
-    input: os.getcwd() + "Reads/nanopore_{readset}.fastq"
+    input: os.getcwd() + "/Reads/nanopore_{readset}.fastq"
     output: 
         "Assembly/nanopore/Hifiasm/{readset}/hap1.fasta",
         "Assembly/nanopore/Hifiasm/{readset}/hap2.fasta",
@@ -29,7 +29,7 @@ rule hifiasm_nanopore:
 
 
 rule hifiasm_pacbio:    
-    input: os.getcwd() + "Reads/pacbio_{readset}.fastq"
+    input: os.getcwd() + "/Reads/pacbio_{readset}.fastq"
     output: 
         "Assembly/pacbio/Hifiasm/{readset}/hap2.fasta",
         "Assembly/pacbio/Hifiasm/{readset}/hap1.fasta",
@@ -56,7 +56,7 @@ rule hifiasm_pacbio:
 
 
 rule nextdenovo:    
-    input: os.getcwd() + "Reads/{techno}_{readset}.fastq"
+    input: os.getcwd() + "/Reads/{techno}_{readset}.fastq"
     output: "Assembly/{techno}/Nextdenovo/{readset}/{readset}.fasta"
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     threads: 36
@@ -83,7 +83,7 @@ rule nextdenovo:
 
 
 rule flye:    
-    input: os.getcwd() + "Reads/{techno}_{readset}.fastq"
+    input: os.getcwd() + "/Reads/{techno}_{readset}.fastq"
     output: "Assembly/{techno}/Flye/{readset}/{readset}.fasta"
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     threads: 36
@@ -106,8 +106,8 @@ rule flye:
 
 rule hifiasm_hybrid:
     input: 
-        nanopore = os.getcwd() + "Reads/nanopore_full.fastq",
-        pacbio = os.getcwd() + "Reads/pacbio_full.fastq"
+        nanopore = os.getcwd() + "/Reads/nanopore_full.fastq",
+        pacbio = os.getcwd() + "/Reads/pacbio_full.fastq"
     output:
         "Assembly/hybrid/Hifiasm/full/hap1.fasta",
         "Assembly/hybrid/Hifiasm/full/hap2.fasta",
@@ -135,7 +135,7 @@ rule hifiasm_hybrid:
 
 rule hifiasm_hic:
     input: 
-        long_reads = os.getcwd() + "Reads/{techno}_{readset}.fastq",
+        long_reads = os.getcwd() + "/Reads/{techno}_{readset}.fastq",
         hic_r1 = config["hic_r1"],
         hic_r2 = config["hic_r2"]
     output: 
@@ -169,8 +169,8 @@ rule hifiasm_hic:
 
 rule hifiasm_hybrid_hic:
     input: 
-        nanopore = os.getcwd() + "Reads/nanopore_full.fastq",
-        pacbio = os.getcwd() + "Reads/pacbio_full.fastq",
+        nanopore = os.getcwd() + "/Reads/nanopore_full.fastq",
+        pacbio = os.getcwd() + "/Reads/pacbio_full.fastq",
         hic_r1 = config["hic_r1"],
         hic_r2 = config["hic_r2"]
     output: 
