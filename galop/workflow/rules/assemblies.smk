@@ -121,9 +121,9 @@ rule hifiasm_hybrid:
 
         hifiasm -o hifiasm -t {threads} --ont {input.nanopore} {input.pacbio}
 
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.p_ctg.gfa > haploid.fasta
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap1.p_ctg.gfa > hap1.fasta
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap2.p_ctg.gfa > hap2.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.p_ctg.gfa > haploid.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.hap1.p_ctg.gfa > hap1.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.hap2.p_ctg.gfa > hap2.fasta
 
         fastoche -f haploid.fasta > haploid.stats
         fastoche -f hap1.fasta > hap1.stats
@@ -156,9 +156,9 @@ rule hifiasm_hic:
 
         hifiasm ${{ont_flag}} -o hifiasm -t {threads} --h1 {input.hic_r1} --h2 {input.hic_r2} {input.long_reads}
 
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.p_ctg.gfa > haploid.fasta
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap1.p_ctg.gfa > hap1.fasta
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap2.p_ctg.gfa > hap2.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.p_ctg.gfa > haploid.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.hap1.p_ctg.gfa > hap1.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.hap2.p_ctg.gfa > hap2.fasta
 
         fastoche -f haploid.fasta > haploid.stats
         fastoche -f hap1.fasta > hap1.stats
@@ -186,9 +186,9 @@ rule hifiasm_hybrid_hic:
 
         hifiasm --ont {input.nanopore} -o hifiasm -t {threads} --h1 {input.hic_r1} --h2 {input.hic_r2} {input.pacbio}
 
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.p_ctg.gfa > haploid.fasta
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap1.p_ctg.gfa > hap1.fasta
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap2.p_ctg.gfa > hap2.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.p_ctg.gfa > haploid.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.hap1.p_ctg.gfa > hap1.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.hap2.p_ctg.gfa > hap2.fasta
 
         fastoche -f haploid.fasta > haploid.stats
         fastoche -f hap1.fasta > hap1.stats
