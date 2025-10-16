@@ -129,7 +129,7 @@ rule hifiasm_hybrid:
         fastoche -f hap1.fasta > hap1.stats
         fastoche -f hap2.fasta > hap2.stats
 
-        rm hifiasm.bp.* hifiasm.ovlp.* hifiasm.ec.bin
+        rm hifiasm.hic.*
     """
 
 
@@ -164,7 +164,7 @@ rule hifiasm_hic:
         fastoche -f hap1.fasta > hap1.stats
         fastoche -f hap2.fasta > hap2.stats
 
-        rm hifiasm.bp.* hifiasm.ovlp.* hifiasm.ec.bin
+        rm hifiasm.hic.*
     """
 
 rule hifiasm_hybrid_hic:
@@ -194,5 +194,5 @@ rule hifiasm_hybrid_hic:
         fastoche -f hap1.fasta > hap1.stats
         fastoche -f hap2.fasta > hap2.stats
 
-        rm hifiasm.bp.* hifiasm.ovlp.* hifiasm.ec.bin
+        rm hifiasm.hic.*
     """
