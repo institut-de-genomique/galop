@@ -121,9 +121,9 @@ rule hifiasm_hybrid:
 
         hifiasm -o hifiasm -t {threads} --ont {input.nanopore} {input.pacbio}
 
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.p_ctg.gfa > haploid.fasta
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.hap1.p_ctg.gfa > hap1.fasta
-        awk '/^S/{{print ">"$2;print $3}}' hifiasm.hic.hap2.p_ctg.gfa > hap2.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.p_ctg.gfa > haploid.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap1.p_ctg.gfa > hap1.fasta
+        awk '/^S/{{print ">"$2;print $3}}' hifiasm.bp.hap2.p_ctg.gfa > hap2.fasta
 
         fastoche -f haploid.fasta > haploid.stats
         fastoche -f hap1.fasta > hap1.stats
