@@ -101,6 +101,8 @@ rule flye:
         mv {wildcards.readset}/assembly_info.txt {wildcards.readset}.assembly_info.txt
 
         fastoche -f {wildcards.readset}.fasta -m 2000 -g {params.genome_size_bp} > {wildcards.readset}.stats
+
+        rm -r {wildcards.readset}
     """
 
 
