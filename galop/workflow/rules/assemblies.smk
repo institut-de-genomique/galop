@@ -97,6 +97,7 @@ rule flye:
 
         flye --nano-hq {input} -t {threads} -g {params.genome_size}m -o {wildcards.readset}
 
+        cd ..
         mv {wildcards.readset}/assembly.fasta {wildcards.readset}.fasta
         mv {wildcards.readset}/assembly_info.txt {wildcards.readset}.assembly_info.txt
 
