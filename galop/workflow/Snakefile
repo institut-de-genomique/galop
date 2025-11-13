@@ -16,7 +16,7 @@ def generate_outputs():
         outputs.append(os.getcwd() + "/Reads/nanopore_full.fastq")
         outputs.append("Reads/nanopore_full.stats")
 
-        if "FULL" in config["readset_list"] and nat hic_only:
+        if "FULL" in config["readset_list"] and not hic_only:
             if "HIFIASM" in config["assemblers_list"]:
                 outputs.append("Assembly/nanopore/Hifiasm/full/hap1.fasta")
                 outputs.append("Assembly/nanopore/Hifiasm/full/hap2.fasta")
