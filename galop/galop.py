@@ -47,7 +47,7 @@ def generate_snakemake_command(args) -> str:
         cmd += f"genome_size={args.genome_size} "
         cmd += f"readset_list={args.readset_list} readset_coverage={args.readset_coverage} "
         cmd += f"assemblers_list={args.assemblers_list} "
-        cmd += f"only_hic={args.hic_only} "
+        cmd += f"hic_only={args.hic_only} "
 
     cmd += f"container_version='{args.container_version}' "
 
