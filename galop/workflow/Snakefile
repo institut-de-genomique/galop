@@ -10,12 +10,13 @@ def generate_outputs():
     has_nanopore = len(config["nanopore_input_file"]) > 0
     has_pacbio = len(config["pacbio_input_file"]) > 0
     has_hic = len(config["hic_r1"]) > 0 and len(config["hic_r2"]) > 0
+    hic_only = config["hic_only"]
 
     if has_nanopore:
         outputs.append(os.getcwd() + "/Reads/nanopore_full.fastq")
         outputs.append("Reads/nanopore_full.stats")
 
-        if "FULL" in config["readset_list"]:
+        if "FULL" in config["readset_list"] and nat hic_only:
             if "HIFIASM" in config["assemblers_list"]:
                 outputs.append("Assembly/nanopore/Hifiasm/full/hap1.fasta")
                 outputs.append("Assembly/nanopore/Hifiasm/full/hap2.fasta")
@@ -24,14 +25,14 @@ def generate_outputs():
                 outputs.append("Assembly/nanopore/Nextdenovo/full/full.fasta")
             if "FLYE" in config["assemblers_list"]:
                 outputs.append("Assembly/nanopore/Flye/full/full.fasta")
-    
-        if "LONGEST" in config["readset_list"]:
+
+        if "LONGEST" in config["readset_list"] and not hic_only:
             outputs.append(os.getcwd() + "/Reads/nanopore_longest.fastq")
             outputs.append("Reads/nanopore_longest.stats")
             if "FLYE" in config["assemblers_list"]:
                 outputs.append("Assembly/nanopore/Flye/longest/longest.fasta")
-    
-        if "FILTLONG" in config["readset_list"]:
+
+        if "FILTLONG" in config["readset_list"] and not hic_only:
             outputs.append(os.getcwd() + "/Reads/nanopore_filtlong.fastq")
             outputs.append("Reads/nanopore_filtlong.stats")
             if "FLYE" in config["assemblers_list"]:
@@ -41,22 +42,22 @@ def generate_outputs():
     if has_pacbio:
         outputs.append(os.getcwd() + "/Reads/pacbio_full.fastq")
         outputs.append("Reads/pacbio_full.stats")
-        
-        if "HIFIASM" in config["assemblers_list"]:
+
+        if "HIFIASM" in config["assemblers_list"] and not hic_only:
             outputs.append("Assembly/pacbio/Hifiasm/full/hap1.fasta")
             outputs.append("Assembly/pacbio/Hifiasm/full/hap2.fasta")
             outputs.append("Assembly/pacbio/Hifiasm/full/haploid.fasta")
 
-        if "NEXTDENOVO" in config["assemblers_list"]:
+        if "NEXTDENOVO" in config["assemblers_list"] and not hic_only:
             outputs.append("Assembly/pacbio/Nextdenovo/full/full.fasta")
 
 
-    if has_pacbio and has_nanopore:
+    if has_pacbio and has_nanopore and not hic_only:
         outputs.append("Assembly/hybrid/Hifiasm/full/hap1.fasta")
         outputs.append("Assembly/hybrid/Hifiasm/full/hap2.fasta")
         outputs.append("Assembly/hybrid/Hifiasm/full/haploid.fasta")
 
-    
+
     if has_hic:
         if has_pacbio:
             outputs.append("Assembly/pacbio_hic/Hifiasm/full/hap1.fasta")
@@ -72,7 +73,7 @@ def generate_outputs():
             outputs.append("Assembly/hybrid_hic/Hifiasm/full/haploid.fasta")
 
 
-            
+
     return outputs
 
 

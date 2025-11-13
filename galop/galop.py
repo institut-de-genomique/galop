@@ -5,7 +5,6 @@ import sys
 
 from galop import cli
 
-
 thisdir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 snakefile_path = os.path.join(thisdir, "workflow", "Snakefile")
 profiles_path = os.path.join(thisdir, "workflow", "profile")
@@ -26,10 +25,10 @@ def create_dir(path: str):
 
 def generate_snakemake_command(args) -> str:
     cmd = f"snakemake --latency-wait 30 --executor {args.executor} -p "
-    
+
     if args.config:
         cmd += f"--profile {profiles_path}/{args.config} "
-    
+
     if args.use_apptainer:
         cmd += "--use-apptainer "
 
@@ -45,12 +44,12 @@ def generate_snakemake_command(args) -> str:
         cmd += f"genome_size={args.genome_size} "
         cmd += f"readset_list={args.readset_list} readset_coverage={args.readset_coverage} "
         cmd += f"assemblers_list={args.assemblers_list} "
-    
+        cmd += f"only_hic={args.hic_only} "
+
     cmd += f"container_version='{args.container_version}' "
-    
+
     return cmd
-        
-    
+
 
 def main():
     args = cli.get_args()
@@ -64,7 +63,7 @@ def main():
     os.chdir(args.output_directory)
     cmd = generate_snakemake_command(args)
     print(f"\n{cmd}\n")
-    
+
     process = subprocess.Popen(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
     process.wait()
 
@@ -74,7 +73,8 @@ def main():
 def print_profiles():
     try:
         names = [
-            d for d in os.listdir(profiles_path)
+            d
+            for d in os.listdir(profiles_path)
             if os.path.isdir(os.path.join(profiles_path, d))
         ]
     except FileNotFoundError:
@@ -122,14 +122,16 @@ def print_profiles():
             except Exception:
                 pass
         rel_path = os.path.join("workflow", "profile", name)
-        rows.append([
-            name,
-            defaults["partition"],
-            defaults["qos"],
-            defaults["runtime"],
-            defaults["mem_mb_per_cpu"],
-            rel_path,
-        ])
+        rows.append(
+            [
+                name,
+                defaults["partition"],
+                defaults["qos"],
+                defaults["runtime"],
+                defaults["mem_mb_per_cpu"],
+                rel_path,
+            ]
+        )
 
     headers = ["PROFILE", "PARTITION", "QOS", "RUNTIME", "MEM_MB_PER_CPU", "PATH"]
     _print_table(headers, rows)

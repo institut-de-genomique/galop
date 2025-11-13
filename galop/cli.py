@@ -2,7 +2,6 @@ import argparse
 import os
 import sys
 
-
 AUTHORIZED_READSETS = ["Full", "Longest", "Filtlong"]
 AUTHORIZED_ASSEMBLERS = ["Hifiasm", "Nextdenovo", "Flye"]
 
@@ -74,7 +73,7 @@ def get_args():
         action="store",
         dest="readset_list",
         help="Comma-separated list of readsets to use (e.g. '--readsets Filtlong,Longest' "
-             "will not launch assemblies with all reads",
+        "will not launch assemblies with all reads",
         default="Full,Filtlong,Longest",
         required=False,
         type=check_readset_list,
@@ -83,11 +82,19 @@ def get_args():
         "--assemblers",
         action="store",
         dest="assemblers_list",
-        help="Comma-separated list of assemblers to use (e.g. '--assemblers Hifiasm,Flye'" 
-             "will not launch Nextdenovo. Choices: Flye, Hifiasm, Nextdenovo",
+        help="Comma-separated list of assemblers to use (e.g. '--assemblers Hifiasm,Flye'"
+        "will not launch Nextdenovo. Choices: Flye, Hifiasm, Nextdenovo",
         default="Hifiasm,Nextdenovo,Flye",
         required=False,
         type=check_assemblers_list,
+    )
+    assembly_parser.add_argument(
+        "--hic-only",
+        action="store_true",
+        dest="hic_only",
+        help="Only launch assemblies with Hi-C data",
+        default=False,
+        required=False,
     )
 
     add_optional_arguments(assembly_parser)
@@ -111,7 +118,7 @@ def get_args():
 
 
 def abs_path_list(paths: list[str]):
-    # Used to convert a path [p1, p2, p3, ...] or 
+    # Used to convert a path [p1, p2, p3, ...] or
     # a str containing paths separated by commas p1,p2,p3,...
     # to a list of absolute paths
 
@@ -150,10 +157,14 @@ def parse_hic_pairs(pairs: list[str]):
         r1 = os.path.abspath(parts[0])
         r2 = os.path.abspath(parts[1])
         if not os.path.exists(r1):
-            print(f"ERROR: Hi-C read file not found: {parts[0]} -> {r1}", file=sys.stderr)
+            print(
+                f"ERROR: Hi-C read file not found: {parts[0]} -> {r1}", file=sys.stderr
+            )
             sys.exit(1)
         if not os.path.exists(r2):
-            print(f"ERROR: Hi-C read file not found: {parts[1]} -> {r2}", file=sys.stderr)
+            print(
+                f"ERROR: Hi-C read file not found: {parts[1]} -> {r2}", file=sys.stderr
+            )
             sys.exit(1)
         r1_list.append(r1)
         r2_list.append(r2)
@@ -163,21 +174,24 @@ def parse_hic_pairs(pairs: list[str]):
 def add_optional_arguments(parser):
     optional_args = parser.add_argument_group("Optional arguments")
     optional_args.add_argument(
-        "-p", "--profile",
+        "-p",
+        "--profile",
         action="store",
         dest="config",
         help="Name of a snakemake cluster profile directory",
         default=None,
     )
     optional_args.add_argument(
-        "-e", "--executor",
+        "-e",
+        "--executor",
         action="store",
         dest="executor",
         help="Name of a snakemake executor plugin",
         default="slurm",
     )
     optional_args.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         action="store",
         dest="output_directory",
         help="Output directory",
@@ -202,26 +216,30 @@ def add_optional_arguments(parser):
 def check_readset_list(readsets: str):
     authorized_readset = [readset.upper() for readset in AUTHORIZED_READSETS]
     readset_list = readsets.upper().split(",")
-    
+
     for readset in readset_list:
         if readset not in authorized_readset:
-            error_msg = f"ERROR: the '{readset}' readset does not belong to the list " \
+            error_msg = (
+                f"ERROR: the '{readset}' readset does not belong to the list "
                 f"of authorized readsets. Authorized readsets: {AUTHORIZED_READSETS}"
+            )
             print(error_msg, file=sys.stderr)
             sys.exit(1)
-            
+
     return ",".join(readset_list)
-    
+
 
 def check_assemblers_list(assemblers: str):
     authorized_assemblers = [assembler.upper() for assembler in AUTHORIZED_ASSEMBLERS]
     assemblers_list = assemblers.upper().split(",")
-    
+
     for assembler in assemblers_list:
         if assembler not in authorized_assemblers:
-            error_msg = f"ERROR: the '{assembler}' assembler does not belong to the list " \
+            error_msg = (
+                f"ERROR: the '{assembler}' assembler does not belong to the list "
                 f"of authorized assemblers. Authorized assemblers: {AUTHORIZED_ASSEMBLERS}"
+            )
             print(error_msg, file=sys.stderr)
             sys.exit(1)
-            
+
     return ",".join(assemblers_list)
