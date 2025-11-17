@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 LABEL maintainer="benjamin.istace@genoscope.cns.fr"
-LABEL description="Docker image for the Genoscope long-reads assembly workflow"
+LABEL description="Docker image for the Genoscope long-reads genome assembly workflow"
 
 WORKDIR /workspace
 
@@ -13,6 +13,16 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# Configure locales
+RUN apt-get update && \
+    apt-get install -y locales && \
+    locale-gen en_US.UTF-8 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
 # Install build dependencies
 RUN apt-get update && \
