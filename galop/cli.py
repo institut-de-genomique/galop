@@ -206,7 +206,7 @@ def add_optional_arguments(parser):
     )
     optional_args.add_argument(
         "--container-version",
-        action="store_true",
+        action="store",
         dest="container_version",
         help="Container version to use",
         default="0.5",
