@@ -70,7 +70,7 @@ rule nextdenovo:
 
         echo {input} > reads.fofn
 
-        cp /usr/local/NextDenovo/doc/run_wrapper.cfg run_tmp.cfg
+        cp /opt/NextDenovo/doc/run_wrapper.cfg run_tmp.cfg
         cat run_tmp.cfg | sed 's/{{threads}}/{threads}/g' | sed 's/{{genomesize}}/{params.genome_size}m/g' > run.cfg
         rm run_tmp.cfg
 
