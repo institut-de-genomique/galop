@@ -86,7 +86,7 @@ rule nextdenovo:
 
 rule flye:    
     input: os.getcwd() + "/Reads/{techno}_{readset}.fastq"
-    output: "Assembly/{techno}/Flye/{readset}.fasta"
+    output: "Assembly/{techno}/Flye/{readset}/{readset}.fasta"
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     threads: 36
     params:
@@ -95,7 +95,7 @@ rule flye:
     shell: """
         echo -e "Flye\t$(flye --version)" >> Assembly/software.versions
 
-        cd Assembly/{wildcards.techno}/Flye/
+        cd Assembly/{wildcards.techno}/Flye/{wildcards.readset}
 
         flye --nano-hq {input} -t {threads} -g {params.genome_size}m -o {wildcards.readset}
 
