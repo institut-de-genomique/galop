@@ -79,7 +79,6 @@ RUN pip3 install --no-cache-dir paralleltask && \
     cd /opt/NextDenovo && \
     make && \
     ln -s /usr/bin/python3 /usr/bin/python
-COPY run_wrapper.cfg /opt/NextDenovo/doc/
 ENV PATH="/opt/NextDenovo:${PATH}"
 
 # Install Flye

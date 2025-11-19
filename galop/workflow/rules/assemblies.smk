@@ -56,7 +56,9 @@ rule hifiasm_pacbio:
 
 
 rule nextdenovo:    
-    input: os.getcwd() + "/Reads/{techno}_{readset}.fastq"
+    input: 
+        reads = os.getcwd() + "/Reads/{techno}_{readset}.fastq",
+        cfg = workflow.source_path("../files/run_wrapper.cfg")
     output: "Assembly/{techno}/Nextdenovo/{readset}/{readset}.fasta"
     container: f"docker://ghcr.io/cea-lbgb/galop:{config['container_version']}"
     threads: 36
@@ -68,9 +70,9 @@ rule nextdenovo:
 
         cd Assembly/{wildcards.techno}/Nextdenovo/{wildcards.readset}
 
-        echo {input} > reads.fofn
+        echo {input.reads} > reads.fofn
 
-        cp /opt/NextDenovo/doc/run_wrapper.cfg run_tmp.cfg
+        cp {input.cfg} run_tmp.cfg
         cat run_tmp.cfg | sed 's/{{threads}}/{threads}/g' | sed 's/{{genomesize}}/{params.genome_size}m/g' > run.cfg
         rm run_tmp.cfg
 

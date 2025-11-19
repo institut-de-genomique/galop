@@ -18,7 +18,7 @@ setuptools.setup(
     ],
     packages=setuptools.find_packages(),
     include_package_data=True,
-    package_data={"galop": ["workflow/*", "workflow/rules/*", "workflow/profile/*/*"]},
+    package_data={"galop": ["workflow/*", "workflow/rules/*", "workflow/profile/*/*", "workflow/files/*"]},
     install_requires=["snakemake", "snakemake-executor-plugin-slurm"],
     entry_points={
         "console_scripts": ["galop=galop.galop:main"],
