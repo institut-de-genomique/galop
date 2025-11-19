@@ -102,7 +102,7 @@ def get_args():
     args = parser.parse_args()
 
     if args.command == "assembly":
-        if args.nanopore_input_file is None and args.pacbio_input_file is None:
+        if not args.nanopore_input_file and not args.pacbio_input_file:
             print("ERROR: Please provide --nanopore and/or --pacbio", file=sys.stderr)
             sys.exit(1)
 
