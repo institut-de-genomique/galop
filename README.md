@@ -31,7 +31,7 @@
 Clone the repository and install using `pip`:
 
 ```bash
-git clone https://github.com/genoscope/galop.git
+git clone https://github.com/institut-de-genomique/galop
 cd galop
 pip install .
 ```
