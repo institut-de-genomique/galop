@@ -36,10 +36,6 @@ cd galop
 pip install .
 ```
 
-## Usage
-
-The main command is `galop assembly`.
-
 ### Basic Usage
 
 **Nanopore Assembly:**
