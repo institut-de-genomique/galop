@@ -1,0 +1,7 @@
+venv
+.venv
+.snakemake
+__pycache__
+galop_assembly
+*.egg-info
+build

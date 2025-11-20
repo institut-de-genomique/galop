@@ -1,0 +1,21 @@
+jobs: 100
+cores: 4000
+
+default-resources:
+    mem_mb_per_cpu: 10000
+    runtime: 5d
+    qos: ngs
+    partition: normal
+    threads: 1
+set-threads:
+    concatenate_nanopore: 1
+    concatenate_pacbio: 1
+    extract_longest: 1
+    filtlong: 1
+    hifiasm_nanopore: 36
+    hifiasm_pacbio: 36
+    hifiasm_hybrid: 36
+    hifiasm_nanopore_hic: 36
+    hifiasm_pacbio_hic: 36
+    nextdenovo: 36
+    flye: 36
