@@ -205,6 +205,13 @@ def add_optional_arguments(parser):
         default=False,
     )
     optional_args.add_argument(
+        "--use-docker",
+        action="store_true",
+        dest="use_docker",
+        help="Use docker to run the pipeline",
+        default=False,
+    )
+    optional_args.add_argument(
         "--container-version",
         action="store",
         dest="container_version",

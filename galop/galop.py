@@ -34,6 +34,8 @@ def generate_snakemake_command(args) -> str:
 
     if args.use_apptainer:
         cmd += "--use-apptainer "
+    elif args.use_docker:
+        cmd += "--use-docker "
 
     if args.command == "assembly":
         cmd += f"--snakefile {snakefile_path} "
