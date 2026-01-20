@@ -73,7 +73,7 @@ def get_args():
         action="store",
         dest="readset_list",
         help="Comma-separated list of readsets to use (e.g. '--readsets Filtlong,Longest' "
-        "will not launch assemblies with all reads",
+        "will not launch assemblies with all reads. Choices: Full, Filtlong, Longest",
         default="Full,Filtlong,Longest",
         required=False,
         type=check_readset_list,
@@ -83,7 +83,7 @@ def get_args():
         action="store",
         dest="assemblers_list",
         help="Comma-separated list of assemblers to use (e.g. '--assemblers Hifiasm,Flye'"
-        "will not launch Nextdenovo. Choices: Flye, Hifiasm, Nextdenovo",
+        "will not launch Nextdenovo. Choices: Flye, Hifiasm, Nextdenovo.",
         default="Hifiasm,Nextdenovo,Flye",
         required=False,
         type=check_assemblers_list,
