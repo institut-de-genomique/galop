@@ -24,10 +24,10 @@ def create_dir(path: str):
 
 
 def generate_snakemake_command(args) -> str:
-    cmd = f"snakemake --latency-wait 30 --executor {args.executor} -p --skip-script-cleanup "
+    cmd = f"snakemake --latency-wait 30 --jobs 100 --executor {args.executor} -p --skip-script-cleanup "
 
     if args.executor == "slurm":
-        cmd += "--slurm-keep-successful-logs "
+        cmd += "--slurm-keep-successful-logs --cores 4000"
 
     if args.config:
         cmd += f"--profile {profiles_path}/{args.config} "
