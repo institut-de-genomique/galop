@@ -2,7 +2,7 @@ jobs: 100
 cores: 4000
 
 default-resources:
-    mem_mb_per_cpu: 10000
+    mem_mb_per_cpu: 30000
     runtime: 7d
     qos: xlarge_ngs
     partition: xlarge
