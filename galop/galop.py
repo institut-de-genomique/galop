@@ -70,9 +70,9 @@ def main():
     print(f"\n{cmd}\n")
 
     process = subprocess.Popen(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
-    process.wait()
+    returncode = process.wait()
 
-    sys.exit(0)
+    sys.exit(returncode)
 
 
 def print_profiles():
