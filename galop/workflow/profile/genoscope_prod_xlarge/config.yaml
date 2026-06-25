@@ -4,8 +4,8 @@ cores: 4000
 default-resources:
     mem_mb_per_cpu: 30000
     runtime: 7d
-    qos: xlarge_ngs
-    partition: xlarge
+    slurm_extra: "'--qos xlarge_ngs'"
+    slurm_partition: xlarge
     threads: 1
 set-threads:
     concatenate_nanopore: 1

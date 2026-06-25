@@ -4,8 +4,8 @@ cores: 4000
 default-resources:
     mem_mb_per_cpu: 10000
     runtime: 3d
-    qos: long
-    partition: normal
+    slurm_extra: "'--qos long'"
+    slurm_partition: normal
     threads: 1
 set-threads:
     concatenate_nanopore: 1
