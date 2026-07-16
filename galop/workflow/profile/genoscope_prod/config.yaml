@@ -4,7 +4,7 @@ cores: 4000
 default-resources:
     mem_mb_per_cpu: 10000
     runtime: 5d
-    slurm_extra: "'--qos ngs'"
+    qos: ngs
     slurm_partition: normal
     threads: 1
 set-threads:
