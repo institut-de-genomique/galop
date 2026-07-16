@@ -95,8 +95,8 @@ def print_profiles():
         cfg_path = os.path.join(profiles_path, name, "config.yaml")
         # Defaults
         defaults = {
-            "partition": "-",
-            "qos": "-",
+            "slurm_partition": "-",
+            "slurm_extra": "-",
             "runtime": "-",
             "mem_mb_per_cpu": "-",
         }
@@ -130,15 +130,15 @@ def print_profiles():
         rows.append(
             [
                 name,
-                defaults["partition"],
-                defaults["qos"],
+                defaults["slurm_partition"],
+                defaults["slurm_extra"].strip("'\""),
                 defaults["runtime"],
                 defaults["mem_mb_per_cpu"],
                 rel_path,
             ]
         )
 
-    headers = ["PROFILE", "PARTITION", "QOS", "RUNTIME", "MEM_MB_PER_CPU", "PATH"]
+    headers = ["PROFILE", "PARTITION", "SLURM_EXTRA", "RUNTIME", "MEM_MB_PER_CPU", "PATH"]
     _print_table(headers, rows)
 
 
