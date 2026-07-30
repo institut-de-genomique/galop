@@ -3,7 +3,7 @@ cores: 4000
 
 default-resources:
     mem_mb_per_cpu: 10000
-    runtime: 1d
+    runtime: 1440
     slurm_partition: normal
     threads: 1
 set-threads:

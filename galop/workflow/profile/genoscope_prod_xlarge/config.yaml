@@ -3,7 +3,7 @@ cores: 4000
 
 default-resources:
     mem_mb_per_cpu: 30000
-    runtime: 7d
+    runtime: 10080
     qos: xlarge_ngs
     slurm_partition: xlarge
     threads: 1

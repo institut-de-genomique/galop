@@ -3,7 +3,7 @@ cores: 4000
 
 default-resources:
     mem_mb_per_cpu: 10000
-    runtime: 3d
+    runtime: 4320
     qos: long
     slurm_partition: normal
     threads: 1
